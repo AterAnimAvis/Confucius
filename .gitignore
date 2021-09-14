@@ -1,8 +1,18 @@
-*.class
-.DS_Store
+# eclipse
+bin
+*.launch
+.settings
+.metadata
+.classpath
+.project
 
-# Package Files #
-*.jar
-*.war
-*.ear
-/target
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea
+
+# gradle
+build
+.gradle

@@ -16,8 +16,9 @@
 
 package org.trendafilov.confucius.core;
 
-import org.junit.After;
-import org.junit.Test;
+import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.trendafilov.confucius.Configuration;
 
 import java.io.ByteArrayInputStream;
@@ -26,7 +27,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UtilsTest {
 
@@ -51,11 +52,11 @@ public class UtilsTest {
 
 	@Test
 	public void testStreamToString() throws IOException {
-		InputStream inputStream = new ByteArrayInputStream("contents".getBytes("UTF-8"));
+		InputStream inputStream = new ByteArrayInputStream("contents".getBytes(StandardCharsets.UTF_8));
 		assertEquals("contents", Utils.streamToString(inputStream));
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		Configuration.getInstance().reset();
 	}

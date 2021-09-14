@@ -16,23 +16,22 @@
 
 package org.trendafilov.confucius;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Properties;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.trendafilov.confucius.Configuration;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.trendafilov.confucius.core.ConfigurationException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConfigurationTest {
 	private Configuration config;
 	private final static String TEST_KEY = "testkey1231";
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		config = Configuration.getInstance();
 	}
@@ -232,94 +231,94 @@ public class ConfigurationTest {
 		assertTrue(props.keySet().size() > 0);
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testMissingBooleanValueKey() {
-		config.getBooleanValue(TEST_KEY);
+		assertThrows(ConfigurationException.class, () -> config.getBooleanValue(TEST_KEY));
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testMissingBooleanListKey() {
-		config.getBooleanList(TEST_KEY, "!");
+		assertThrows(ConfigurationException.class, () -> config.getBooleanList(TEST_KEY, "!"));
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testMissingByteValueKey() {
-		config.getByteValue(TEST_KEY);
+		assertThrows(ConfigurationException.class, () -> config.getByteValue(TEST_KEY));
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testMissingByteListKey() {
-		config.getByteList(TEST_KEY, "!");
+		assertThrows(ConfigurationException.class, () -> config.getByteList(TEST_KEY, "!"));
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testMissingCharValueKey() {
-		config.getCharValue(TEST_KEY);
+		assertThrows(ConfigurationException.class, () -> config.getCharValue(TEST_KEY));
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testMissingCharListKey() {
-		config.getCharList(TEST_KEY, "!");
+		assertThrows(ConfigurationException.class, () -> config.getCharList(TEST_KEY, "!"));
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testMissingDoubleValueKey() {
-		config.getDoubleValue(TEST_KEY);
+		assertThrows(ConfigurationException.class, () -> config.getDoubleValue(TEST_KEY));
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testMissingDoubleListKey() {
-		config.getDoubleList(TEST_KEY, "!");
+		assertThrows(ConfigurationException.class, () -> config.getDoubleList(TEST_KEY, "!"));
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testMissingFloatValueKey() {
-		config.getFloatValue(TEST_KEY);
+		assertThrows(ConfigurationException.class, () -> config.getFloatValue(TEST_KEY));
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testMissingFloatListKey() {
-		config.getFloatList(TEST_KEY, "!");
+		assertThrows(ConfigurationException.class, () -> config.getFloatList(TEST_KEY, "!"));
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testMissingIntValueKey() {
-		config.getIntValue(TEST_KEY);
+		assertThrows(ConfigurationException.class, () -> config.getIntValue(TEST_KEY));
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testMissingIntListKey() {
-		config.getBooleanList(TEST_KEY, "!");
+		assertThrows(ConfigurationException.class, () -> config.getBooleanList(TEST_KEY, "!"));
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testLongShortValueKey() {
-		config.getShortValue(TEST_KEY);
+		assertThrows(ConfigurationException.class, () -> config.getShortValue(TEST_KEY));
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testMissingShortListKey() {
-		config.getShortList(TEST_KEY, "!");
+		assertThrows(ConfigurationException.class, () -> config.getShortList(TEST_KEY, "!"));
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testLongStringValueKey() {
-		config.getStringValue(TEST_KEY);
+		assertThrows(ConfigurationException.class, () -> config.getStringValue(TEST_KEY));
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testMissingStringListKey() {
-		config.getStringList(TEST_KEY, "!");
+		assertThrows(ConfigurationException.class, () -> config.getStringList(TEST_KEY, "!"));
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testLongBooleanValueKey() {
-		config.getLongValue(TEST_KEY);
+		assertThrows(ConfigurationException.class, () -> config.getLongValue(TEST_KEY));
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testMissingLongListKey() {
-		config.getLongList(TEST_KEY, "!");
+		assertThrows(ConfigurationException.class, () -> config.getLongList(TEST_KEY, "!"));
 	}
 
 	@Test
@@ -346,46 +345,46 @@ public class ConfigurationTest {
 		assertEquals("!!", config.getStringValue(TEST_KEY, "!!"));
 	}
 
-	@Test(expected = NumberFormatException.class)
+	@Test
 	public void testNotParsableLong() {
 		config.setProperty(TEST_KEY, "empty");
-		config.getLongValue(TEST_KEY);
-		config.getLongValue(TEST_KEY, 923954957346L);
+		assertThrows(NumberFormatException.class, () -> config.getLongValue(TEST_KEY));
+		assertThrows(NumberFormatException.class, () -> config.getLongValue(TEST_KEY, 923954957346L));
 	}
 
-	@Test(expected = NumberFormatException.class)
+	@Test
 	public void testNotParsableLongList() {
 		config.setProperty(TEST_KEY, "empty");
-		config.getLongList(TEST_KEY);
+		assertThrows(NumberFormatException.class, () -> config.getLongList(TEST_KEY));
 	}
 
-	@Test(expected = NumberFormatException.class)
+	@Test
 	public void testNotParsableShort() {
 		config.setProperty(TEST_KEY, "empty");
-		config.getShortValue(TEST_KEY);
-		config.getShortValue(TEST_KEY, (short)123);
+		assertThrows(NumberFormatException.class, () -> config.getShortValue(TEST_KEY));
+		assertThrows(NumberFormatException.class, () -> config.getShortValue(TEST_KEY, (short)123));
 	}
 
-	@Test(expected = NumberFormatException.class)
+	@Test
 	public void testNotParsableShortList() {
 		config.setProperty(TEST_KEY, "empty");
-		config.getShortList(TEST_KEY);
+		assertThrows(NumberFormatException.class, () -> config.getShortList(TEST_KEY));
 	}
 
-	@Test(expected = NumberFormatException.class)
+	@Test
 	public void testNotParsableByte() {
 		config.setProperty(TEST_KEY, "empty");
-		config.getByteValue(TEST_KEY);
-		config.getByteValue(TEST_KEY, (byte)5);
+		assertThrows(NumberFormatException.class, () -> config.getByteValue(TEST_KEY));
+		assertThrows(NumberFormatException.class, () -> config.getByteValue(TEST_KEY, (byte)5));
 	}
 
-	@Test(expected = NumberFormatException.class)
+	@Test
 	public void testNotParsableByteList() {
 		config.setProperty(TEST_KEY, "empty");
-		config.getByteList(TEST_KEY);
+		assertThrows(NumberFormatException.class, () -> config.getByteList(TEST_KEY));
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		config.reset();
 		System.clearProperty("conf.properties");

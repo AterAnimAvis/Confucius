@@ -16,8 +16,9 @@
 
 package org.trendafilov.confucius.core;
 
-import org.junit.After;
-import org.junit.Test;
+import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.util.Collections;
@@ -25,8 +26,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ParserTest {
 	private final static String FILENAME = System.getProperty("java.io.tmpdir") + File.separator + "ljctest.cfg";
@@ -34,7 +36,7 @@ public class ParserTest {
 
 	@Test
 	public void testValidConfigFile() {
-		createFile(Collections.<String, String>emptyMap(), null, null);
+		createFile(Collections.emptyMap(), null, null);
 		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
 		assertTrue(new Parser(provider, null).getConfiguration().isEmpty());
 	}
@@ -45,28 +47,28 @@ public class ParserTest {
 		assertTrue(new Parser(provider, null).getConfiguration().isEmpty());
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testMissingConfigFile() {
 		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME + "test");
-		new Parser(provider, null).getConfiguration();
+		assertThrows(ConfigurationException.class, () -> new Parser(provider, null));
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testMissingConfigFileWithContext() {
 		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME + "test");
-		new Parser(provider, TEST_CONTEXT);
+		assertThrows(ConfigurationException.class, () -> new Parser(provider, TEST_CONTEXT));
 	}
 
 	@Test
 	public void testAllEmptyContexts() {
-		createFile(Collections.<String, String>emptyMap(), TEST_CONTEXT, Collections.<String, String>emptyMap());
+		createFile(Collections.emptyMap(), TEST_CONTEXT, Collections.emptyMap());
 		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
 		assertTrue(new Parser(provider, TEST_CONTEXT).getConfiguration().isEmpty());
 	}
 
 	@Test
 	public void testEmptyContext() {
-		createFile(makeMap("key", "value"), TEST_CONTEXT, Collections.<String, String>emptyMap());
+		createFile(makeMap("key", "value"), TEST_CONTEXT, Collections.emptyMap());
 		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
 		assertEquals("value", configuration.get("key"));
@@ -78,7 +80,7 @@ public class ParserTest {
 		createFile(map, null, null);
 		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
 		Map<String, String> configuration = new Parser(provider, null).getConfiguration();
-		assertTrue(map.size() == 2);
+		assertEquals(2, map.size());
 		for (Entry<String, String> entry : configuration.entrySet())
 			assertEquals(map.get(entry.getKey()), entry.getValue());
 	}
@@ -91,7 +93,7 @@ public class ParserTest {
 		assertEquals("somevalue", configuration.get("somekey"));
 		assertEquals("newvalue", configuration.get("newkey"));
 		assertEquals("123", configuration.get("test"));
-		assertTrue(configuration.size() == 3);
+		assertEquals(3, configuration.size());
 	}
 
 	@Test
@@ -101,7 +103,7 @@ public class ParserTest {
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
 		assertEquals("somevalue", configuration.get("somekey"));
 		assertEquals("123", configuration.get("newkey"));
-		assertTrue(configuration.size() == 2);
+		assertEquals(2, configuration.size());
 	}
 
 	@Test
@@ -109,7 +111,7 @@ public class ParserTest {
 		createFile(makeMap("key1", "value", "key2", "${key1}"), null, null);
 		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
-		assertTrue(configuration.size() == 2);
+		assertEquals(2, configuration.size());
 		assertEquals("value", configuration.get("key1"));
 		assertEquals("value", configuration.get("key2"));
 	}
@@ -119,7 +121,7 @@ public class ParserTest {
 		createFile(makeMap("key1", "value"), TEST_CONTEXT, makeMap("key2", "${key1}"));
 		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
-		assertTrue(configuration.size() == 2);
+		assertEquals(2, configuration.size());
 		assertEquals("value", configuration.get("key1"));
 		assertEquals("value", configuration.get("key2"));
 	}
@@ -129,7 +131,7 @@ public class ParserTest {
 		createFile(makeMap("key0", "0", "key1", "value", "random", "no", "key2", "${key1}", "key3", "${key2}", "key4", "${key0}"), null, null);
 		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
-		assertTrue(configuration.size() == 6);
+		assertEquals(6, configuration.size());
 		assertEquals("0", configuration.get("key0"));
 		assertEquals("value", configuration.get("key1"));
 		assertEquals("no", configuration.get("random"));
@@ -143,7 +145,7 @@ public class ParserTest {
 		createFile(makeMap("key1", "value", "key2", "${key1}"), TEST_CONTEXT, makeMap("key3", "${key2}", "key4", "${key0}"));
 		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
-		assertTrue(configuration.size() == 4);
+		assertEquals(4, configuration.size());
 		assertEquals("value", configuration.get("key1"));
 		assertEquals("value", configuration.get("key2"));
 		assertEquals("value", configuration.get("key3"));
@@ -155,7 +157,7 @@ public class ParserTest {
 		createFile(makeMap("key0", "0", "key1", "value", "key2", "${key1}"), TEST_CONTEXT, makeMap("key2", "${key0}", "key3", "${key0}"));
 		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
-		assertTrue(configuration.size() == 4);
+		assertEquals(4, configuration.size());
 		assertEquals("0", configuration.get("key0"));
 		assertEquals("value", configuration.get("key1"));
 		assertEquals("0", configuration.get("key2"));
@@ -167,28 +169,28 @@ public class ParserTest {
 		createFile(makeMap("key1", "${key3}", "key2", "${key1}", "key3", "${key2}"), null, null);
 		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
-		assertTrue(configuration.size() == 3);
+		assertEquals(3, configuration.size());
 		assertEquals("${key3}", configuration.get("key1"));
 		assertEquals("${key1}", configuration.get("key2"));
 		assertEquals("${key2}", configuration.get("key3"));
 	}
 
-	@Test(expected = ConfigurationException.class)
+	@Test
 	public void testUnparsableLine() throws Exception {
 		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
-		PrintWriter writer = new PrintWriter(FILENAME, "UTF-8");
+		PrintWriter writer = new PrintWriter(FILENAME, StandardCharsets.UTF_8);
 		writer.println("[Default]");
 		writeLine(writer, makeMap("key1", "value1"));
 		writer.println(" ");
 		writer.println("Somestuff #");
 		writer.close();
-		new Parser(provider, null);
+		assertThrows(ConfigurationException.class, () -> new Parser(provider, null));
 	}
 
 	@Test
 	public void testMultiContextRead() throws Exception {
 		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
-		PrintWriter writer = new PrintWriter(FILENAME, "UTF-8");
+		PrintWriter writer = new PrintWriter(FILENAME, StandardCharsets.UTF_8);
 		writer.println("[Default]");
 		writeLine(writer, makeMap("key1", "value1")); // will be included
 		writer.println("[" + TEST_CONTEXT + "-2]");
@@ -199,22 +201,22 @@ public class ParserTest {
 		writeLine(writer, makeMap("key4", "value4"));
 		writer.close();
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
-		assertTrue(configuration.size() == 2);
+		assertEquals(2, configuration.size());
 		assertEquals("value3", configuration.get("key3"));
 		assertEquals("value1", configuration.get("key1"));
 	}
 
 	@Test
-	public void testLegacyFormat() throws Exception {
+	public void testLegacyFormat() {
 		String configurationString = new StringBuilder()
 				.append("key1=value1\n")
 				.append(" \n")
 				.append("key3=value3\n").toString();
-		InputStream inputStream = new ByteArrayInputStream(configurationString.getBytes("UTF-8"));
+		InputStream inputStream = new ByteArrayInputStream(configurationString.getBytes(StandardCharsets.UTF_8));
 
 		ConfigurationDataProvider provider = new StreamConfigurationDataProvider(inputStream);
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
-		assertTrue(configuration.size() == 2);
+		assertEquals(2, configuration.size());
 		assertEquals("value3", configuration.get("key3"));
 		assertEquals("value1", configuration.get("key1"));
 	}
@@ -227,14 +229,14 @@ public class ParserTest {
 		assertEquals("https://www.google.com/fp=dfc3525e9a3b356a&q=hello&safe=off/", configuration.get("key"));
 	}
 	
-	@After
+	@AfterEach
 	public void tearDown() {
 		new File(FILENAME).delete();
 	}
 	
 	private void createFile(Map<String, String> defaultPairs, String contextName, Map<String, String> contextPairs) {
 		try {
-			PrintWriter writer = new PrintWriter(FILENAME, "UTF-8");
+			PrintWriter writer = new PrintWriter(FILENAME, StandardCharsets.UTF_8);
 			writer.println("[Default]");
 			writeLine(writer, defaultPairs);
 			if (contextName != null) {
@@ -242,7 +244,7 @@ public class ParserTest {
 				writeLine(writer, contextPairs);
 			}
 			writer.close();
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}

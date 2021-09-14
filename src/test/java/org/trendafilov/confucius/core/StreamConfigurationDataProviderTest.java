@@ -16,21 +16,22 @@
 
 package org.trendafilov.confucius.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StreamConfigurationDataProviderTest {
 
 	@Test
 	public void testReturnInputStream() throws IOException {
-		InputStream inputStream = new ByteArrayInputStream("contents".getBytes("UTF-8"));
+		InputStream inputStream = new ByteArrayInputStream("contents".getBytes(StandardCharsets.UTF_8));
 		StreamConfigurationDataProvider provider = new StreamConfigurationDataProvider(inputStream);
 		assertEquals("contents", Utils.streamToString(provider.getInputStream()));
 	}
@@ -45,7 +46,7 @@ public class StreamConfigurationDataProviderTest {
 
 	@Test
 	public void testReturnLines() throws IOException {
-		InputStream inputStream = new ByteArrayInputStream("a\nb\r\nc\n".getBytes("UTF-8"));
+		InputStream inputStream = new ByteArrayInputStream("a\nb\r\nc\n".getBytes(StandardCharsets.UTF_8));
 		StreamConfigurationDataProvider provider = new StreamConfigurationDataProvider(inputStream);
 		List<String> lines = provider.getAllLines();
 		assertEquals(3, lines.size());
@@ -56,7 +57,7 @@ public class StreamConfigurationDataProviderTest {
 
 	@Test
 	public void testResettingStreamAfterGetAllLines() throws IOException {
-		InputStream inputStream = new ByteArrayInputStream("contents".getBytes("UTF-8"));
+		InputStream inputStream = new ByteArrayInputStream("contents".getBytes(StandardCharsets.UTF_8));
 		StreamConfigurationDataProvider provider = new StreamConfigurationDataProvider(inputStream);
 		provider.getAllLines();
 		assertEquals("contents", Utils.streamToString(provider.getInputStream()));

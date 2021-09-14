@@ -16,18 +16,18 @@
 
 package org.trendafilov.confucius;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
-import org.junit.After;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class InjectableConfigurationTest {
 	private final static String TEST_CONTEXT = "Test2";
@@ -55,7 +55,7 @@ public class InjectableConfigurationTest {
 		StringBuilder conf = new StringBuilder("[Default]");
 		conf.append("\n");
 		conf.append("key123=value123");
-		InputStream inputStream = new ByteArrayInputStream(conf.toString().getBytes("UTF-8"));
+		InputStream inputStream = new ByteArrayInputStream(conf.toString().getBytes(StandardCharsets.UTF_8));
 		InjectableConfiguration config = new InjectableConfiguration(inputStream, "Default");
 		assertFalse(config.keySet().isEmpty());
 		assertEquals("value123", config.getStringValue("key123"));
@@ -72,7 +72,7 @@ public class InjectableConfigurationTest {
 		temp.delete();
 	}
 	
-	@After
+	@AfterEach
 	public void tearDown() {
 		System.clearProperty("conf.properties");
 		System.clearProperty("conf.context");

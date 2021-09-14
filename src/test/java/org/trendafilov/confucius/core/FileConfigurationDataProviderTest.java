@@ -16,14 +16,17 @@
 
 package org.trendafilov.confucius.core;
 
-import junit.framework.TestCase;
-import org.junit.After;
-import org.junit.Test;
+import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.util.List;
 
-public class FileConfigurationDataProviderTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class FileConfigurationDataProviderTest {
 	private final static String FILENAME = System.getProperty("java.io.tmpdir") + File.separator + "fileprovidertest";
 
 	@Test
@@ -52,17 +55,17 @@ public class FileConfigurationDataProviderTest extends TestCase {
 		assertEquals("c", lines.get(2));
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		new File(FILENAME).delete();
 	}
 	
 	private void createFile() {
 		try {
-			PrintWriter writer = new PrintWriter(FILENAME, "UTF-8");
+			PrintWriter writer = new PrintWriter(FILENAME, StandardCharsets.UTF_8);
 			writer.print("a\nb\r\nc\n");
 			writer.close();
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
