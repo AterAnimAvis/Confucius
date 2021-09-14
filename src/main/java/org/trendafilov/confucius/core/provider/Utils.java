@@ -14,16 +14,36 @@
  * limitations under the License.
  */
 
-package org.trendafilov.confucius.core;
+package org.trendafilov.confucius.core.provider;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-interface ConfigurationDataProvider {
-	@NotNull List<String> getAllLines() throws IOException;
+class Utils {
+	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
-	@Nullable InputStream getInputStream() throws IOException;
+	private Utils() {
+	}
+
+	static @NotNull String streamToString(@Nullable InputStream input) throws IOException {
+		if (input == null) return "";
+
+		StringWriter output = new StringWriter();
+		InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8);
+
+		char[] buffer = new char[DEFAULT_BUFFER_SIZE];
+		for (int n = reader.read(buffer); n != -1; n = reader.read(buffer)) {
+			output.write(buffer, 0, n);
+		}
+		return output.toString();
+	}
+
 }

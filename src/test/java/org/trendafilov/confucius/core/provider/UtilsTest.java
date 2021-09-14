@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-package org.trendafilov.confucius.core;
+package org.trendafilov.confucius.core.provider;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import org.jetbrains.annotations.NotNull;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.Test;
 
-class Utils {
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-	private Utils() {
-	}
+public class UtilsTest {
 
-	static @NotNull Map<String, String> propertiesToMap(@NotNull Properties props) {
-		Map<String, String> properties = new HashMap<>();
-		for (Object e : props.keySet()) {
-			String key = (String) e;
-			String value = props.getProperty(key);
-			properties.put(key, value);
-		}
-		return properties;
+	@Test
+	public void testStreamToString() throws IOException {
+		InputStream inputStream = new ByteArrayInputStream("contents".getBytes(StandardCharsets.UTF_8));
+		assertEquals("contents", Utils.streamToString(inputStream));
 	}
 
 }

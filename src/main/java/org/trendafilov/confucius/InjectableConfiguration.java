@@ -16,6 +16,7 @@
 
 package org.trendafilov.confucius;
 
+import java.nio.file.Path;
 import org.trendafilov.confucius.core.AbstractConfiguration;
 
 import java.io.InputStream;
@@ -43,6 +44,10 @@ public class InjectableConfiguration extends AbstractConfiguration {
 
 	public InjectableConfiguration(String filePath, String context) {
 		super(filePath, context);
+	}
+
+	public InjectableConfiguration(Path path, String context) {
+		super(path, context);
 	}
 
 	public InjectableConfiguration(InputStream inputStream, String context) {

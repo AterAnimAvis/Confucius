@@ -22,6 +22,8 @@ import java.util.*;
 import java.util.Map.Entry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.trendafilov.confucius.ConfigurationException;
+import org.trendafilov.confucius.core.provider.ConfigurationDataProvider;
 
 class Parser {
 	private final static String DEFAULT_CONTEXT = "Default";

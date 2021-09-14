@@ -16,8 +16,14 @@
 
 package org.trendafilov.confucius.core;
 
+import com.google.common.jimfs.Jimfs;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -25,51 +31,70 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.trendafilov.confucius.ConfigurationException;
+import org.trendafilov.confucius.core.provider.ConfigurationDataProvider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ParserTest {
-	private final static String FILENAME = System.getProperty("java.io.tmpdir") + File.separator + "ljctest.cfg";
+	private static FileSystem JIM_FS;
+	private static Path FILENAME;
 	private final static String TEST_CONTEXT = "Test";
+
+	@BeforeAll
+	public static void setup() {
+		JIM_FS = Jimfs.newFileSystem();
+		FILENAME = JIM_FS.getPath("ljctest.cfg");
+	}
+
+	@AfterAll
+	public static void closeJimFS() throws IOException {
+		JIM_FS.close();
+	}
+
+	@AfterEach
+	public void tearDown() throws IOException {
+		Files.deleteIfExists(FILENAME);
+	}
 
 	@Test
 	public void testValidConfigFile() {
 		createFile(Collections.emptyMap(), null, null);
-		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
+		ConfigurationDataProvider provider = ConfigurationDataProvider.of(FILENAME);
 		assertTrue(new Parser(provider, null).getConfiguration().isEmpty());
 	}
 
 	@Test
 	public void testNullConfig() {
-		ConfigurationDataProvider provider = new FileConfigurationDataProvider(null);
+		ConfigurationDataProvider provider = ConfigurationDataProvider.of((String) null);
 		assertTrue(new Parser(provider, null).getConfiguration().isEmpty());
 	}
 
 	@Test
 	public void testMissingConfigFile() {
-		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME + "test");
+		ConfigurationDataProvider provider = ConfigurationDataProvider.of(FILENAME.resolveSibling("none-existent.cfg"));
 		assertThrows(ConfigurationException.class, () -> new Parser(provider, null));
 	}
 
 	@Test
 	public void testMissingConfigFileWithContext() {
-		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME + "test");
+		ConfigurationDataProvider provider = ConfigurationDataProvider.of(FILENAME.resolveSibling("none-existent.cfg"));
 		assertThrows(ConfigurationException.class, () -> new Parser(provider, TEST_CONTEXT));
 	}
 
 	@Test
 	public void testAllEmptyContexts() {
 		createFile(Collections.emptyMap(), TEST_CONTEXT, Collections.emptyMap());
-		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
+		ConfigurationDataProvider provider = ConfigurationDataProvider.of(FILENAME);
 		assertTrue(new Parser(provider, TEST_CONTEXT).getConfiguration().isEmpty());
 	}
 
 	@Test
 	public void testEmptyContext() {
 		createFile(makeMap("key", "value"), TEST_CONTEXT, Collections.emptyMap());
-		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
+		ConfigurationDataProvider provider = ConfigurationDataProvider.of(FILENAME);
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
 		assertEquals("value", configuration.get("key"));
 	}
@@ -78,7 +103,7 @@ public class ParserTest {
 	public void testDefaultContext() {
 		Map<String, String> map = makeMap("somekey", "somevalue", "newkey", "newvalue");
 		createFile(map, null, null);
-		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
+		ConfigurationDataProvider provider = ConfigurationDataProvider.of(FILENAME);
 		Map<String, String> configuration = new Parser(provider, null).getConfiguration();
 		assertEquals(2, map.size());
 		for (Entry<String, String> entry : configuration.entrySet())
@@ -88,7 +113,7 @@ public class ParserTest {
 	@Test
 	public void testBothContexts() {
 		createFile(makeMap("somekey", "somevalue", "newkey", "newvalue"), TEST_CONTEXT, makeMap("test", "123"));
-		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
+		ConfigurationDataProvider provider = ConfigurationDataProvider.of(FILENAME);
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
 		assertEquals("somevalue", configuration.get("somekey"));
 		assertEquals("newvalue", configuration.get("newkey"));
@@ -99,7 +124,7 @@ public class ParserTest {
 	@Test
 	public void testBothContextsWithOverride() {
 		createFile(makeMap("somekey", "somevalue", "newkey", "newvalue"), TEST_CONTEXT, makeMap("newkey", "123"));
-		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
+		ConfigurationDataProvider provider = ConfigurationDataProvider.of(FILENAME);
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
 		assertEquals("somevalue", configuration.get("somekey"));
 		assertEquals("123", configuration.get("newkey"));
@@ -109,7 +134,7 @@ public class ParserTest {
 	@Test
 	public void testSubstitutionSameContext() {
 		createFile(makeMap("key1", "value", "key2", "${key1}"), null, null);
-		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
+		ConfigurationDataProvider provider = ConfigurationDataProvider.of(FILENAME);
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
 		assertEquals(2, configuration.size());
 		assertEquals("value", configuration.get("key1"));
@@ -119,7 +144,7 @@ public class ParserTest {
 	@Test
 	public void testSubstitutionAcrossContexts() {
 		createFile(makeMap("key1", "value"), TEST_CONTEXT, makeMap("key2", "${key1}"));
-		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
+		ConfigurationDataProvider provider = ConfigurationDataProvider.of(FILENAME);
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
 		assertEquals(2, configuration.size());
 		assertEquals("value", configuration.get("key1"));
@@ -129,7 +154,7 @@ public class ParserTest {
 	@Test
 	public void testSubstitutionChained() {
 		createFile(makeMap("key0", "0", "key1", "value", "random", "no", "key2", "${key1}", "key3", "${key2}", "key4", "${key0}"), null, null);
-		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
+		ConfigurationDataProvider provider = ConfigurationDataProvider.of(FILENAME);
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
 		assertEquals(6, configuration.size());
 		assertEquals("0", configuration.get("key0"));
@@ -143,7 +168,7 @@ public class ParserTest {
 	@Test
 	public void testSubstitutionChainedAcrossContexts() {
 		createFile(makeMap("key1", "value", "key2", "${key1}"), TEST_CONTEXT, makeMap("key3", "${key2}", "key4", "${key0}"));
-		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
+		ConfigurationDataProvider provider = ConfigurationDataProvider.of(FILENAME);
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
 		assertEquals(4, configuration.size());
 		assertEquals("value", configuration.get("key1"));
@@ -155,7 +180,7 @@ public class ParserTest {
 	@Test
 	public void testSubstitutionWithOverride() {
 		createFile(makeMap("key0", "0", "key1", "value", "key2", "${key1}"), TEST_CONTEXT, makeMap("key2", "${key0}", "key3", "${key0}"));
-		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
+		ConfigurationDataProvider provider = ConfigurationDataProvider.of(FILENAME);
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
 		assertEquals(4, configuration.size());
 		assertEquals("0", configuration.get("key0"));
@@ -167,7 +192,7 @@ public class ParserTest {
 	@Test
 	public void testSubstitutionCircular() {
 		createFile(makeMap("key1", "${key3}", "key2", "${key1}", "key3", "${key2}"), null, null);
-		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
+		ConfigurationDataProvider provider = ConfigurationDataProvider.of(FILENAME);
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
 		assertEquals(3, configuration.size());
 		assertEquals("${key3}", configuration.get("key1"));
@@ -177,29 +202,33 @@ public class ParserTest {
 
 	@Test
 	public void testUnparsableLine() throws Exception {
-		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
-		PrintWriter writer = new PrintWriter(FILENAME, StandardCharsets.UTF_8);
-		writer.println("[Default]");
-		writeLine(writer, makeMap("key1", "value1"));
-		writer.println(" ");
-		writer.println("Somestuff #");
-		writer.close();
+		ConfigurationDataProvider provider = ConfigurationDataProvider.of(FILENAME);
+		try (OutputStream stream = Files.newOutputStream(FILENAME)) {
+			PrintWriter writer = new PrintWriter(stream);
+			writer.println("[Default]");
+			writeLine(writer, makeMap("key1", "value1"));
+			writer.println(" ");
+			writer.println("Somestuff #");
+			writer.close();
+		}
 		assertThrows(ConfigurationException.class, () -> new Parser(provider, null));
 	}
 
 	@Test
 	public void testMultiContextRead() throws Exception {
-		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
-		PrintWriter writer = new PrintWriter(FILENAME, StandardCharsets.UTF_8);
-		writer.println("[Default]");
-		writeLine(writer, makeMap("key1", "value1")); // will be included
-		writer.println("[" + TEST_CONTEXT + "-2]");
-		writeLine(writer, makeMap("key2", "value2"));
-		writer.println("[" + TEST_CONTEXT + "]");
-		writeLine(writer, makeMap("key3", "value3")); // will be included
-		writer.println("[" + TEST_CONTEXT + "-3]");
-		writeLine(writer, makeMap("key4", "value4"));
-		writer.close();
+		ConfigurationDataProvider provider = ConfigurationDataProvider.of(FILENAME);
+		try (OutputStream stream = Files.newOutputStream(FILENAME)) {
+			PrintWriter writer = new PrintWriter(stream);
+			writer.println("[Default]");
+			writeLine(writer, makeMap("key1", "value1")); // will be included
+			writer.println("[" + TEST_CONTEXT + "-2]");
+			writeLine(writer, makeMap("key2", "value2"));
+			writer.println("[" + TEST_CONTEXT + "]");
+			writeLine(writer, makeMap("key3", "value3")); // will be included
+			writer.println("[" + TEST_CONTEXT + "-3]");
+			writeLine(writer, makeMap("key4", "value4"));
+			writer.close();
+		}
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
 		assertEquals(2, configuration.size());
 		assertEquals("value3", configuration.get("key3"));
@@ -214,7 +243,7 @@ public class ParserTest {
 				.append("key3=value3\n").toString();
 		InputStream inputStream = new ByteArrayInputStream(configurationString.getBytes(StandardCharsets.UTF_8));
 
-		ConfigurationDataProvider provider = new StreamConfigurationDataProvider(inputStream);
+		ConfigurationDataProvider provider = ConfigurationDataProvider.of(inputStream);
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
 		assertEquals(2, configuration.size());
 		assertEquals("value3", configuration.get("key3"));
@@ -224,19 +253,14 @@ public class ParserTest {
 	@Test
 	public void testComplexString() {
 		createFile(makeMap("key", "https://www.google.com/fp=dfc3525e9a3b356a&q=hello&safe=off/"), TEST_CONTEXT, Collections.<String, String>emptyMap());
-		ConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
+		ConfigurationDataProvider provider = ConfigurationDataProvider.of(FILENAME);
 		Map<String, String> configuration = new Parser(provider, TEST_CONTEXT).getConfiguration();
 		assertEquals("https://www.google.com/fp=dfc3525e9a3b356a&q=hello&safe=off/", configuration.get("key"));
 	}
 	
-	@AfterEach
-	public void tearDown() {
-		new File(FILENAME).delete();
-	}
-	
 	private void createFile(Map<String, String> defaultPairs, String contextName, Map<String, String> contextPairs) {
-		try {
-			PrintWriter writer = new PrintWriter(FILENAME, StandardCharsets.UTF_8);
+		try (OutputStream stream = Files.newOutputStream(FILENAME)) {
+			PrintWriter writer = new PrintWriter(stream);
 			writer.println("[Default]");
 			writeLine(writer, defaultPairs);
 			if (contextName != null) {
@@ -259,7 +283,7 @@ public class ParserTest {
 			line.append(pair.getKey()).append(" = ").append(pair.getValue());
 			if (Math.random() <= 0.20 && hasComments)
 				line.append(" # some random comment");
-			writer.println(line.toString());
+			writer.println(line);
 		}
 	}
 

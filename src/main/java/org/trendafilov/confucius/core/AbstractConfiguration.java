@@ -16,6 +16,7 @@
 
 package org.trendafilov.confucius.core;
 
+import java.nio.file.Path;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,6 +27,8 @@ import org.trendafilov.confucius.Configurable;
 import java.io.InputStream;
 import java.util.*;
 import java.util.Map.Entry;
+import org.trendafilov.confucius.ConfigurationException;
+import org.trendafilov.confucius.core.provider.ConfigurationDataProvider;
 
 public abstract class AbstractConfiguration implements Configurable {
 	private final static Logger LOG = LoggerFactory.getLogger(AbstractConfiguration.class);
@@ -39,7 +42,7 @@ public abstract class AbstractConfiguration implements Configurable {
 	private final @NotNull  Map<String, String> initialState;
 
 	public AbstractConfiguration() {
-		this.configurationDataProvider = new FileConfigurationDataProvider(System.getProperty(FILE_PARAM));
+		this.configurationDataProvider = ConfigurationDataProvider.of(System.getProperty(FILE_PARAM));
 		this.context = System.getProperty(CONTEXT_PARAM);
 		this.initialState = Collections.unmodifiableMap(Utils.propertiesToMap(System.getProperties()));
 		init();
@@ -52,14 +55,24 @@ public abstract class AbstractConfiguration implements Configurable {
 		if (context != null)
 			setProperty(CONTEXT_PARAM, context);
 		setProperty(FILE_PARAM, filePath);
-		this.configurationDataProvider = new FileConfigurationDataProvider(filePath);
+		this.configurationDataProvider = ConfigurationDataProvider.of(filePath);
+		this.context = context;
+		this.initialState = Collections.unmodifiableMap(Utils.propertiesToMap(System.getProperties()));
+		init();
+	}
+
+	public AbstractConfiguration(@NotNull Path path, @Nullable String context) {
+		if (context != null)
+			setProperty(CONTEXT_PARAM, context);
+		setProperty(FILE_PARAM, path);
+		this.configurationDataProvider = ConfigurationDataProvider.of(path);
 		this.context = context;
 		this.initialState = Collections.unmodifiableMap(Utils.propertiesToMap(System.getProperties()));
 		init();
 	}
 
 	public AbstractConfiguration(@NotNull InputStream inputStream, @Nullable String context) {
-		this.configurationDataProvider = new StreamConfigurationDataProvider(inputStream);
+		this.configurationDataProvider = ConfigurationDataProvider.of(inputStream);
 		this.context = context;
 		this.initialState = Collections.unmodifiableMap(Utils.propertiesToMap(System.getProperties()));
 		init();

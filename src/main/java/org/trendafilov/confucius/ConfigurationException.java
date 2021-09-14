@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.trendafilov.confucius.core;
+package org.trendafilov.confucius;
 
 import java.io.Serial;
 import org.jetbrains.annotations.Nullable;

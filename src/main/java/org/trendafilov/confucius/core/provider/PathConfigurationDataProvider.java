@@ -14,35 +14,30 @@
  * limitations under the License.
  */
 
-package org.trendafilov.confucius.core;
+package org.trendafilov.confucius.core.provider;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-class StreamConfigurationDataProvider implements ConfigurationDataProvider {
+class PathConfigurationDataProvider implements ConfigurationDataProvider {
+	private final @Nullable Path path;
 
-	private @Nullable InputStream inputStream;
-
-	public StreamConfigurationDataProvider(@Nullable InputStream inputStream) {
-		this.inputStream = inputStream;
+	public PathConfigurationDataProvider(@Nullable Path path) {
+		this.path = path;
 	}
 
 	public @NotNull List<String> getAllLines() throws IOException {
-		if (inputStream == null)
-			return new ArrayList<>();
-		String configurationString = Utils.streamToString(inputStream);
-		this.inputStream = new ByteArrayInputStream(configurationString.getBytes(StandardCharsets.UTF_8));
-		return new ArrayList<>(Arrays.asList(configurationString.split("\\r?\\n")));
+		return path == null ? new ArrayList<>() : Files.readAllLines(path, StandardCharsets.UTF_8);
 	}
 
-	public @Nullable InputStream getInputStream() {
-		return inputStream;
+	public @Nullable InputStream getInputStream() throws IOException {
+		return path == null ? null : Files.newInputStream(path);
 	}
 }

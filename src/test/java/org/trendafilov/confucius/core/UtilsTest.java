@@ -16,14 +16,10 @@
 
 package org.trendafilov.confucius.core;
 
-import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.trendafilov.confucius.Configuration;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -48,12 +44,6 @@ public class UtilsTest {
 		assertTrue(before.size() == now.size() && now.size() > 0);
 		for (Entry<String, String> entry : before.entrySet())
 			assertEquals(entry.getValue(), now.get(entry.getKey()));
-	}
-
-	@Test
-	public void testStreamToString() throws IOException {
-		InputStream inputStream = new ByteArrayInputStream("contents".getBytes(StandardCharsets.UTF_8));
-		assertEquals("contents", Utils.streamToString(inputStream));
 	}
 
 	@AfterEach

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.trendafilov.confucius.core;
+package org.trendafilov.confucius.core.provider;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,17 +28,21 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 class FileConfigurationDataProvider implements ConfigurationDataProvider {
-	private final @Nullable String filename;
+	private final @Nullable File file;
+
+	public FileConfigurationDataProvider(@Nullable File file) {
+		this.file = file;
+	}
 
 	public FileConfigurationDataProvider(@Nullable String filename) {
-		this.filename = filename;
+		this.file = filename == null ? null : new File(filename);
 	}
 
 	public @NotNull List<String> getAllLines() throws IOException {
-		return filename == null ? new ArrayList<>() : Files.readAllLines(new File(filename).toPath(), StandardCharsets.UTF_8);
+		return file == null ? new ArrayList<>() : Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
 	}
 
 	public @Nullable InputStream getInputStream() throws IOException {
-		return filename == null ? null : new FileInputStream(filename);
+		return file == null ? null : new FileInputStream(file);
 	}
 }

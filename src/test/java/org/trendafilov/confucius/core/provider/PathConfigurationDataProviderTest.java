@@ -14,31 +14,48 @@
  * limitations under the License.
  */
 
-package org.trendafilov.confucius.core;
+package org.trendafilov.confucius.core.provider;
 
+import com.google.common.collect.Lists;
+import com.google.common.jimfs.Jimfs;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-
-import java.io.*;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class FileConfigurationDataProviderTest {
-	private final static String FILENAME = System.getProperty("java.io.tmpdir") + File.separator + "fileprovidertest";
+public class PathConfigurationDataProviderTest {
+	private static FileSystem JIM_FS;
+	private static Path FILENAME;
+
+	@BeforeAll
+	public static void setup() throws IOException {
+		JIM_FS = Jimfs.newFileSystem();
+		FILENAME = JIM_FS.getPath("path_provider_test");
+		Files.writeString(FILENAME, "a\nb\r\nc\n");
+	}
+
+	@AfterAll
+	public static void tearDown() throws IOException {
+		JIM_FS.close();
+	}
 
 	@Test
 	public void testReturnInputStream() throws IOException {
-		createFile();
-		FileConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
+		PathConfigurationDataProvider provider = new PathConfigurationDataProvider(FILENAME);
 		assertEquals("a\nb\r\nc\n", Utils.streamToString(provider.getInputStream()));
 	}
 
 	@Test
 	public void testReturnEmptyListWhenFileNameIsNull() throws IOException {
-		FileConfigurationDataProvider provider = new FileConfigurationDataProvider(null);
+		PathConfigurationDataProvider provider = new PathConfigurationDataProvider(null);
 		List<String> lines = provider.getAllLines();
 		assertNotNull(lines);
 		assertEquals(0, lines.size());
@@ -46,27 +63,11 @@ public class FileConfigurationDataProviderTest {
 
 	@Test
 	public void testReturnLines() throws IOException {
-		createFile();
-		FileConfigurationDataProvider provider = new FileConfigurationDataProvider(FILENAME);
+		PathConfigurationDataProvider provider = new PathConfigurationDataProvider(FILENAME);
 		List<String> lines = provider.getAllLines();
 		assertEquals(3, lines.size());
 		assertEquals("a", lines.get(0));
 		assertEquals("b", lines.get(1));
 		assertEquals("c", lines.get(2));
-	}
-
-	@AfterEach
-	public void tearDown() {
-		new File(FILENAME).delete();
-	}
-	
-	private void createFile() {
-		try {
-			PrintWriter writer = new PrintWriter(FILENAME, StandardCharsets.UTF_8);
-			writer.print("a\nb\r\nc\n");
-			writer.close();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
 	}
 }

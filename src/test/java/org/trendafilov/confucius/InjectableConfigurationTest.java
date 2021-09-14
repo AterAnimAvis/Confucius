@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.trendafilov.confucius.core.ConfigurationException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -44,6 +43,18 @@ public class InjectableConfigurationTest {
 	public void testTwoArgsConstructorUsingFilename() throws IOException {
 		File temp = writeFile(true);
 		InjectableConfiguration config = new InjectableConfiguration(temp.getAbsolutePath(), TEST_CONTEXT);
+		assertFalse(config.keySet().isEmpty());
+		assertEquals(TEST_CONTEXT, config.getStringValue("conf.context"));
+		assertEquals(temp.getAbsolutePath(), config.getStringValue("conf.properties"));
+		assertEquals("value123", config.getStringValue("key123"));
+		assertEquals("value456", config.getStringValue("key456"));
+		temp.delete();
+	}
+
+	@Test
+	public void testTwoArgsConstructorUsingPath() throws IOException {
+		File temp = writeFile(true);
+		InjectableConfiguration config = new InjectableConfiguration(temp.toPath(), TEST_CONTEXT);
 		assertFalse(config.keySet().isEmpty());
 		assertEquals(TEST_CONTEXT, config.getStringValue("conf.context"));
 		assertEquals(temp.getAbsolutePath(), config.getStringValue("conf.properties"));
