@@ -17,6 +17,7 @@
 package org.trendafilov.confucius.core;
 
 import java.io.Serial;
+import org.jetbrains.annotations.Nullable;
 
 public class ConfigurationException extends RuntimeException {
 
@@ -27,15 +28,15 @@ public class ConfigurationException extends RuntimeException {
 		super();
 	}
 
-	public ConfigurationException(String message) {
+	public ConfigurationException(@Nullable String message) {
 		super(message);
 	}
 
-	public ConfigurationException(Throwable cause) {
+	public ConfigurationException(@Nullable Throwable cause) {
 		super(cause);
 	}
 
-	public ConfigurationException(String message, Throwable cause) {
+	public ConfigurationException(@Nullable String message, @Nullable Throwable cause) {
 		super(message, cause);
 	}
 }

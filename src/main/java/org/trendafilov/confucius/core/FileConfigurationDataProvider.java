@@ -24,19 +24,21 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 class FileConfigurationDataProvider implements ConfigurationDataProvider {
-	private final String filename;
+	private final @Nullable String filename;
 
-	public FileConfigurationDataProvider(String filename) {
+	public FileConfigurationDataProvider(@Nullable String filename) {
 		this.filename = filename;
 	}
 
-	public List<String> getAllLines() throws IOException {
+	public @NotNull List<String> getAllLines() throws IOException {
 		return filename == null ? new ArrayList<>() : Files.readAllLines(new File(filename).toPath(), StandardCharsets.UTF_8);
 	}
 
-	public InputStream getInputStream() throws IOException {
-		return new FileInputStream(filename);
+	public @Nullable InputStream getInputStream() throws IOException {
+		return filename == null ? null : new FileInputStream(filename);
 	}
 }

@@ -17,8 +17,11 @@
 package org.trendafilov.confucius.core;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.Map.Entry;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 class Parser {
 	private final static String DEFAULT_CONTEXT = "Default";
@@ -31,7 +34,7 @@ class Parser {
 
 	private final Map<String, String> configuration = new HashMap<>();
 
-	public Parser(ConfigurationDataProvider configurationDataProvider, String context) {
+	public Parser(@NotNull ConfigurationDataProvider configurationDataProvider, @Nullable String context) {
 		try {
 			Collection<String> lines = configurationDataProvider.getAllLines();
 			if (!lines.isEmpty() && isStandardProps(lines)) {
@@ -46,11 +49,11 @@ class Parser {
 		}
 	}
 
-	public Map<String, String> getConfiguration() {
+	public @NotNull Map<String, String> getConfiguration() {
 		return configuration;
 	}
 
-	private Map<String, String> parseLine(String line) {
+	private @NotNull Map<String, String> parseLine(@NotNull String line) {
 		Map<String, String> pair = new HashMap<>();
 		String newLine = line.trim();
 		if (line.contains(COMMENT))
@@ -67,20 +70,21 @@ class Parser {
 		}
 	}
 
-	private boolean isStandardProps(Collection<String> lines) {
+	private boolean isStandardProps(@NotNull Collection<String> lines) {
 		for (String line : lines)
 			if (isContext(line))
 				return false;
 		return true;
 	}
 
-	private void loadStandardProps(ConfigurationDataProvider provider) throws IOException {
+	private void loadStandardProps(@NotNull ConfigurationDataProvider provider) throws IOException {
 		Properties props = new Properties();
-		props.load(provider.getInputStream());
+		InputStream stream = provider.getInputStream();
+		if (stream != null) props.load(stream);
 		configuration.putAll(Utils.propertiesToMap(props));
 	}
 
-	private void parseContext(Collection<String> lines, String context) {
+	private void parseContext(@NotNull Collection<String> lines, @Nullable String context) {
 		boolean insideContext = false;
 		for (String line : lines) {
 			if (isNamedContext(line, context))
@@ -111,20 +115,20 @@ class Parser {
 		}
 	}
 
-	private boolean isContext(String line) {
+	private boolean isContext(@NotNull String line) {
 		line = line.trim();
 		return line.startsWith(LEFT_CONTEXT) && line.endsWith(RIGHT_CONTEXT);
 	}
 
-	private boolean isNamedContext(String line, String context) {
+	private boolean isNamedContext(@NotNull String line, @Nullable String context) {
 		return context != null && line.trim().equalsIgnoreCase(LEFT_CONTEXT + context + RIGHT_CONTEXT);
 	}
 
-	private boolean isSubstitution(String value) {
+	private boolean isSubstitution(@NotNull String value) {
 		return value.startsWith(LEFT_SUBSTITUTION) && value.endsWith(RIGHT_SUBSTITUTION);
 	}
 
-	private String getSubstitution(String value) {
+	private @NotNull String getSubstitution(@NotNull String value) {
 		return value.substring(2, value.length() - 1);
 	}
 }

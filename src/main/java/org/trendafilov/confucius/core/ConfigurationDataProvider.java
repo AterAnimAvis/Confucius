@@ -19,9 +19,11 @@ package org.trendafilov.confucius.core;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 interface ConfigurationDataProvider {
-	List<String> getAllLines() throws IOException;
+	@NotNull List<String> getAllLines() throws IOException;
 
-	InputStream getInputStream() throws IOException;
+	@Nullable InputStream getInputStream() throws IOException;
 }

@@ -24,6 +24,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 class Utils {
 	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
@@ -31,7 +33,7 @@ class Utils {
 	private Utils() {
 	}
 
-	static Map<String, String> propertiesToMap(Properties props) {
+	static @NotNull Map<String, String> propertiesToMap(@NotNull Properties props) {
 		Map<String, String> properties = new HashMap<>();
 		for (Object e : props.keySet()) {
 			String key = (String) e;
@@ -41,7 +43,9 @@ class Utils {
 		return properties;
 	}
 
-	static String streamToString(InputStream input) throws IOException {
+	static @NotNull String streamToString(@Nullable InputStream input) throws IOException {
+		if (input == null) return "";
+
 		StringWriter output = new StringWriter();
 		InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8);
 

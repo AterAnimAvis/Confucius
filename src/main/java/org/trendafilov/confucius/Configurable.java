@@ -20,6 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The <tt>Configurable</tt> interface defines the contracts which are exposed
@@ -36,7 +40,7 @@ public interface Configurable {
 	 * 
 	 * @return a set view of the keys contained in the configuration properties
 	 */
-	Set<String> keySet();
+	@NotNull Set<@NotNull String> keySet();
 
 	/**
 	 * Returns as a {@code boolean} the configuration value to which the
@@ -48,7 +52,7 @@ public interface Configurable {
 	 *            of the configuration property
 	 * @return associated value as a boolean
 	 */
-	boolean getBooleanValue(String key);
+	boolean getBooleanValue(@NotNull String key);
 
 	/**
 	 * Returns as a {@code boolean} the configuration value to which the
@@ -63,7 +67,7 @@ public interface Configurable {
 	 * @return associated value as a boolean, or <b>defaultValue</b> if the map
 	 *         does not contain the <b>key</b>
 	 */
-	boolean getBooleanValue(String key, boolean defaultValue);
+	boolean getBooleanValue(@NotNull String key, boolean defaultValue);
 
 	/**
 	 * Returns a List of values mapped to the specified key, or throws an
@@ -77,7 +81,7 @@ public interface Configurable {
 	 * @return a list of boolean values, as separated on the <b>separator</b>
 	 *         regular expression
 	 */
-	List<Boolean> getBooleanList(String key, String separator);
+	@NotNull List<@NotNull Boolean> getBooleanList(@NotNull String key, @NotNull String separator);
 
 	/**
 	 * Returns a List of values mapped to the specified key, or throws an
@@ -90,7 +94,7 @@ public interface Configurable {
 	 * @return a list of boolean values, as separated on the comma character
 	 *         ("<b>,</b>")
 	 */
-	List<Boolean> getBooleanList(String key);
+	@NotNull List<@NotNull Boolean> getBooleanList(@NotNull String key);
 
 	/**
 	 * Returns as a {@code byte} the configuration value to which the specified
@@ -101,7 +105,7 @@ public interface Configurable {
 	 *            of the configuration property
 	 * @return associated value as a byte
 	 */
-	byte getByteValue(String key);
+	byte getByteValue(@NotNull String key);
 
 	/**
 	 * Returns as a {@code byte} the configuration value to which the specified
@@ -116,7 +120,7 @@ public interface Configurable {
 	 * @return associated value as a byte, or <b>defaultValue</b> if the map
 	 *         does not contain the <b>key</b>
 	 */
-	byte getByteValue(String key, byte defaultValue);
+	byte getByteValue(@NotNull String key, byte defaultValue);
 
 	/**
 	 * Returns a List of values mapped to the specified key, or throws an
@@ -130,7 +134,7 @@ public interface Configurable {
 	 * @return a list of byte values, as separated on the <b>separator</b>
 	 *         regular expression
 	 */
-	List<Byte> getByteList(String key, String separator);
+	@NotNull List<@NotNull Byte> getByteList(@NotNull String key, @NotNull String separator);
 
 	/**
 	 * Returns a List of values mapped to the specified key, or throws an
@@ -143,7 +147,7 @@ public interface Configurable {
 	 * @return a list of byte values, as separated on the comma character
 	 *         ("<b>,</b>")
 	 */
-	List<Byte> getByteList(String key);
+	@NotNull List<@NotNull Byte> getByteList(@NotNull String key);
 
 	/**
 	 * Returns as a {@code char} the configuration value to which the specified
@@ -154,7 +158,7 @@ public interface Configurable {
 	 *            of the configuration property
 	 * @return associated value as a char
 	 */
-	char getCharValue(String key);
+	char getCharValue(@NotNull String key);
 
 	/**
 	 * Returns as a {@code char} the configuration value to which the specified
@@ -169,7 +173,7 @@ public interface Configurable {
 	 * @return associated value as a char, or <b>defaultValue</b> if the map
 	 *         does not contain the <b>key</b>
 	 */
-	char getCharValue(String key, char defaultValue);
+	char getCharValue(@NotNull String key, char defaultValue);
 
 	/**
 	 * Returns a List of values mapped to the specified key, or throws an
@@ -183,7 +187,7 @@ public interface Configurable {
 	 * @return a list of char values, as separated on the <b>separator</b>
 	 *         regular expression
 	 */
-	List<Character> getCharList(String key, String separator);
+	@NotNull List<@NotNull Character> getCharList(@NotNull String key, @NotNull String separator);
 
 	/**
 	 * Returns a List of values mapped to the specified key, or throws an
@@ -196,7 +200,7 @@ public interface Configurable {
 	 * @return a list of char values, as separated on the comma character
 	 *         ("<b>,</b>")
 	 */
-	List<Character> getCharList(String key);
+	@NotNull List<@NotNull Character> getCharList(@NotNull String key);
 
 	/**
 	 * Returns as a {@code double} the configuration value to which the
@@ -208,7 +212,7 @@ public interface Configurable {
 	 *            of the configuration property
 	 * @return associated value as a double
 	 */
-	double getDoubleValue(String key);
+	double getDoubleValue(@NotNull String key);
 
 	/**
 	 * Returns as a {@code double} the configuration value to which the
@@ -223,7 +227,7 @@ public interface Configurable {
 	 * @return associated value as a double, or <b>defaultValue</b> if the map
 	 *         does not contain the <b>key</b>
 	 */
-	double getDoubleValue(String key, double defaultValue);
+	double getDoubleValue(@NotNull String key, double defaultValue);
 
 	/**
 	 * Returns a List of values mapped to the specified key, or throws an
@@ -237,7 +241,7 @@ public interface Configurable {
 	 * @return a list of double values, as separated on the <b>separator</b>
 	 *         regular expression
 	 */
-	List<Double> getDoubleList(String key, String separator);
+	@NotNull List<@NotNull Double> getDoubleList(@NotNull String key, @NotNull String separator);
 
 	/**
 	 * Returns a List of values mapped to the specified key, or throws an
@@ -250,7 +254,7 @@ public interface Configurable {
 	 * @return a list of double values, as separated on the comma character
 	 *         ("<b>,</b>")
 	 */
-	List<Double> getDoubleList(String key);
+	@NotNull List<@NotNull Double> getDoubleList(@NotNull String key);
 
 	/**
 	 * Returns as a {@code float} the configuration value to which the specified
@@ -261,7 +265,7 @@ public interface Configurable {
 	 *            of the configuration property
 	 * @return associated value as a float
 	 */
-	float getFloatValue(String key);
+	float getFloatValue(@NotNull String key);
 
 	/**
 	 * Returns as a {@code float} the configuration value to which the specified
@@ -276,7 +280,7 @@ public interface Configurable {
 	 * @return associated value as a float, or <b>defaultValue</b> if the map
 	 *         does not contain the <b>key</b>
 	 */
-	float getFloatValue(String key, float defaultValue);
+	float getFloatValue(@NotNull String key, float defaultValue);
 
 	/**
 	 * Returns a List of values mapped to the specified key, or throws an
@@ -290,7 +294,7 @@ public interface Configurable {
 	 * @return a list of float values, as separated on the <b>separator</b>
 	 *         regular expression
 	 */
-	List<Float> getFloatList(String key, String separator);
+	@NotNull List<@NotNull Float> getFloatList(@NotNull String key, @NotNull String separator);
 
 	/**
 	 * Returns a List of values mapped to the specified key, or throws an
@@ -303,7 +307,7 @@ public interface Configurable {
 	 * @return a list of float values, as separated on the comma character
 	 *         ("<b>,</b>")
 	 */
-	List<Float> getFloatList(String key);
+	@NotNull List<@NotNull Float> getFloatList(@NotNull String key);
 
 	/**
 	 * Returns as an {@code int} the configuration value to which the specified
@@ -314,7 +318,7 @@ public interface Configurable {
 	 *            of the configuration property
 	 * @return associated value as an int
 	 */
-	int getIntValue(String key);
+	int getIntValue(@NotNull String key);
 
 	/**
 	 * Returns as an {@code int} the configuration value to which the specified
@@ -329,7 +333,7 @@ public interface Configurable {
 	 * @return associated value as an int, or <b>defaultValue</b> if the map
 	 *         does not contain the <b>key</b>
 	 */
-	int getIntValue(String key, int defaultValue);
+	int getIntValue(@NotNull String key, int defaultValue);
 
 	/**
 	 * Returns a List of values mapped to the specified key, or throws an
@@ -343,7 +347,7 @@ public interface Configurable {
 	 * @return a list of int values, as separated on the <b>separator</b>
 	 *         regular expression
 	 */
-	List<Integer> getIntList(String key, String separator);
+	@NotNull List<@NotNull Integer> getIntList(@NotNull String key, @NotNull String separator);
 
 	/**
 	 * Returns a List of values mapped to the specified key, or throws an
@@ -356,7 +360,7 @@ public interface Configurable {
 	 * @return a list of int values, as separated on the comma character
 	 *         ("<b>,</b>")
 	 */
-	List<Integer> getIntList(String key);
+	@NotNull List<@NotNull Integer> getIntList(@NotNull String key);
 
 	/**
 	 * Returns as a {@code long} the configuration value to which the specified
@@ -367,7 +371,7 @@ public interface Configurable {
 	 *            of the configuration property
 	 * @return associated value as a long
 	 */
-	long getLongValue(String key);
+	long getLongValue(@NotNull String key);
 
 	/**
 	 * Returns as a {@code long} the configuration value to which the specified
@@ -382,7 +386,7 @@ public interface Configurable {
 	 * @return associated value as a long, or <b>defaultValue</b> if the map
 	 *         does not contain the <b>key</b>
 	 */
-	long getLongValue(String key, long defaultValue);
+	long getLongValue(@NotNull String key, long defaultValue);
 
 	/**
 	 * Returns a List of values mapped to the specified key, or throws an
@@ -396,7 +400,7 @@ public interface Configurable {
 	 * @return a list of long values, as separated on the <b>separator</b>
 	 *         regular expression
 	 */
-	List<Long> getLongList(String key, String separator);
+	@NotNull List<@NotNull Long> getLongList(@NotNull String key, @NotNull String separator);
 
 	/**
 	 * Returns a List of values mapped to the specified key, or throws an
@@ -409,7 +413,7 @@ public interface Configurable {
 	 * @return a list of long values, as separated on the comma character
 	 *         ("<b>,</b>")
 	 */
-	List<Long> getLongList(String key);
+	@NotNull List<@NotNull Long> getLongList(@NotNull String key);
 
 	/**
 	 * Returns as a {@code short} the configuration value to which the specified
@@ -420,7 +424,7 @@ public interface Configurable {
 	 *            of the configuration property
 	 * @return associated value as a short
 	 */
-	short getShortValue(String key);
+	short getShortValue(@NotNull String key);
 
 	/**
 	 * Returns as a {@code short} the configuration value to which the specified
@@ -435,7 +439,7 @@ public interface Configurable {
 	 * @return associated value as a short, or <b>defaultValue</b> if the map
 	 *         does not contain the <b>key</b>
 	 */
-	short getShortValue(String key, short defaultValue);
+	short getShortValue(@NotNull String key, short defaultValue);
 
 	/**
 	 * Returns a List of values mapped to the specified key, or throws an
@@ -449,7 +453,7 @@ public interface Configurable {
 	 * @return a list of short values, as separated on the <b>separator</b>
 	 *         regular expression
 	 */
-	List<Short> getShortList(String key, String separator);
+	@NotNull List<@NotNull Short> getShortList(@NotNull String key, @NotNull String separator);
 
 	/**
 	 * Returns a List of values mapped to the specified key, or throws an
@@ -462,7 +466,7 @@ public interface Configurable {
 	 * @return a list of short values, as separated on the comma character
 	 *         ("<b>,</b>")
 	 */
-	List<Short> getShortList(String key);
+	@NotNull List<@NotNull Short> getShortList(@NotNull String key);
 
 	/**
 	 * Returns as a {@link String} the configuration value to which the
@@ -474,7 +478,7 @@ public interface Configurable {
 	 *            of the configuration property
 	 * @return associated value as a String
 	 */
-	String getStringValue(String key);
+	@NotNull String getStringValue(@NotNull String key);
 
 	/**
 	 * Returns as a {@link String} the configuration value to which the
@@ -489,7 +493,8 @@ public interface Configurable {
 	 * @return associated value as a String, or <b>defaultValue</b> if the map
 	 *         does not contain the <b>key</b>
 	 */
-	String getStringValue(String key, String defaultValue);
+	@Contract("_, null -> null; _, !null -> !null")
+	@Nullable String getStringValue(@NotNull String key, @Nullable String defaultValue);
 
 	/**
 	 * Returns a List of values mapped to the specified key, or throws an
@@ -503,7 +508,7 @@ public interface Configurable {
 	 * @return a list of strings, as separated on the <b>separator</b> regular
 	 *         expression
 	 */
-	List<String> getStringList(String key, String separator);
+	@NotNull List<@NotNull String> getStringList(@NotNull String key, @NotNull String separator);
 
 	/**
 	 * Returns a List of values mapped to the specified key, or throws an
@@ -516,7 +521,7 @@ public interface Configurable {
 	 * @return a list of strings, as separated on the comma character
 	 *         ("<b>,</b>")
 	 */
-	List<String> getStringList(String key);
+	@NotNull List<@NotNull String> getStringList(@NotNull String key);
 
 	/**
 	 * Returns the current configuration properties.
@@ -526,7 +531,7 @@ public interface Configurable {
 	 * @see java.lang.System#getProperties()
 	 * @see java.util.Properties
 	 */
-	Properties getProperties();
+	@NotNull Properties getProperties();
 
 	/**
 	 * Sets the configuration property indicated by the specified key.
@@ -542,7 +547,7 @@ public interface Configurable {
 	 * @param value
 	 *            the value of the configuration property
 	 */
-	<T> void setProperty(String key, T value);
+	<T> void setProperty(@NotNull String key, @NotNull T value);
 
 	/**
 	 * Sets the configuration properties as indicated by the specified map.
@@ -551,7 +556,7 @@ public interface Configurable {
 	 *            a map of configuration properties
 	 * @see #setProperty(String, T)
 	 */
-	<T> void setProperties(Map<String, T> properties);
+	<T> void setProperties(@NotNull Map<String, T> properties);
 
 	/**
 	 * Sets the configuration properties to the <code>Properties</code>
@@ -562,7 +567,7 @@ public interface Configurable {
 	 * @see java.util.Properties
 	 * @see java.lang.System#setProperties(Properties)
 	 */
-	void setProperties(Properties properties);
+	void setProperties(@NotNull Properties properties);
 
 	/**
 	 * Removes the configuration property indicated by the specified key.
@@ -570,7 +575,7 @@ public interface Configurable {
 	 * @param key
 	 *            of the configuration property
 	 */
-	void clearProperty(String key);
+	void clearProperty(@NotNull String key);
 
 	/**
 	 * Resets all intermediate state held in the configuration properties.
@@ -581,5 +586,6 @@ public interface Configurable {
 	 * between unit tests.
 	 * </p>
 	 */
+	@ApiStatus.Internal
 	void reset();
 }

@@ -23,16 +23,18 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 class StreamConfigurationDataProvider implements ConfigurationDataProvider {
 
-	private InputStream inputStream;
+	private @Nullable InputStream inputStream;
 
-	public StreamConfigurationDataProvider(InputStream inputStream) {
+	public StreamConfigurationDataProvider(@Nullable InputStream inputStream) {
 		this.inputStream = inputStream;
 	}
 
-	public List<String> getAllLines() throws IOException {
+	public @NotNull List<String> getAllLines() throws IOException {
 		if (inputStream == null)
 			return new ArrayList<>();
 		String configurationString = Utils.streamToString(inputStream);
@@ -40,7 +42,7 @@ class StreamConfigurationDataProvider implements ConfigurationDataProvider {
 		return new ArrayList<>(Arrays.asList(configurationString.split("\\r?\\n")));
 	}
 
-	public InputStream getInputStream() {
+	public @Nullable InputStream getInputStream() {
 		return inputStream;
 	}
 }

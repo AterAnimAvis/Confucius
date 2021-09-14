@@ -16,6 +16,9 @@
 
 package org.trendafilov.confucius.core;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.trendafilov.confucius.Configurable;
@@ -31,9 +34,9 @@ public abstract class AbstractConfiguration implements Configurable {
 	protected static String FILE_PARAM = "conf.properties";
 	protected static String CONTEXT_PARAM = "conf.context";
 
-	private final ConfigurationDataProvider configurationDataProvider;
-	private final String context;
-	private final Map<String, String> initialState;
+	private final @NotNull  ConfigurationDataProvider configurationDataProvider;
+	private final @Nullable String context;
+	private final @NotNull  Map<String, String> initialState;
 
 	public AbstractConfiguration() {
 		this.configurationDataProvider = new FileConfigurationDataProvider(System.getProperty(FILE_PARAM));
@@ -42,7 +45,8 @@ public abstract class AbstractConfiguration implements Configurable {
 		init();
 	}
 
-	public AbstractConfiguration(String filePath, String context) {
+	public AbstractConfiguration(@NotNull String filePath, @Nullable String context) {
+		//noinspection ConstantConditions
 		if (filePath == null)
 			throw new ConfigurationException("filePath cannot be null. Use no arg constructor instead.");
 		if (context != null)
@@ -54,7 +58,7 @@ public abstract class AbstractConfiguration implements Configurable {
 		init();
 	}
 
-	public AbstractConfiguration(InputStream inputStream, String context) {
+	public AbstractConfiguration(@NotNull InputStream inputStream, @Nullable String context) {
 		this.configurationDataProvider = new StreamConfigurationDataProvider(inputStream);
 		this.context = context;
 		this.initialState = Collections.unmodifiableMap(Utils.propertiesToMap(System.getProperties()));
@@ -67,31 +71,31 @@ public abstract class AbstractConfiguration implements Configurable {
 		setProperties(new Parser(configurationDataProvider, context).getConfiguration());
 	}
 
-	public synchronized Set<String> keySet() {
+	public synchronized @NotNull Set<String> keySet() {
 		return Utils.propertiesToMap(getProperties()).keySet();
 	}
 
-	public boolean getBooleanValue(String key) {
+	public boolean getBooleanValue(@NotNull String key) {
 		return Boolean.parseBoolean(getKey(key));
 	}
 
-	public synchronized boolean getBooleanValue(String key, boolean defaultValue) {
+	public synchronized boolean getBooleanValue(@NotNull String key, boolean defaultValue) {
 		String value = System.getProperty(key);
 		return value == null ? defaultValue : Boolean.parseBoolean(value);
 	}
 
-	public List<Boolean> getBooleanList(String key, String separator) {
+	public @NotNull List<@NotNull Boolean> getBooleanList(@NotNull String key, @NotNull String separator) {
 		List<Boolean> parts = new ArrayList<>();
 		for (String value : getKey(key).split(separator))
 			parts.add(Boolean.parseBoolean(value.trim()));
 		return parts;
 	}
 
-	public List<Boolean> getBooleanList(String key) {
+	public @NotNull List<@NotNull Boolean> getBooleanList(@NotNull String key) {
 		return getBooleanList(key, ITEM_SEPARATOR);
 	}
 
-	public byte getByteValue(String key) {
+	public byte getByteValue(@NotNull String key) {
 		try {
 			return Byte.parseByte(getKey(key));
 		} catch (NumberFormatException e) {
@@ -99,7 +103,7 @@ public abstract class AbstractConfiguration implements Configurable {
 		}
 	}
 
-	public synchronized byte getByteValue(String key, byte defaultValue) {
+	public synchronized byte getByteValue(@NotNull String key, byte defaultValue) {
 		String value = System.getProperty(key);
 		try {
 			return value == null ? defaultValue : Byte.parseByte(value);
@@ -108,7 +112,7 @@ public abstract class AbstractConfiguration implements Configurable {
 		}
 	}
 
-	public List<Byte> getByteList(String key, String separator) {
+	public @NotNull List<@NotNull Byte> getByteList(@NotNull String key, @NotNull String separator) {
 		List<Byte> parts = new ArrayList<>();
 		try {
 			for (String value : getKey(key).split(separator))
@@ -119,91 +123,91 @@ public abstract class AbstractConfiguration implements Configurable {
 		}
 	}
 
-	public List<Byte> getByteList(String key) {
+	public @NotNull List<@NotNull Byte> getByteList(@NotNull String key) {
 		return getByteList(key, ITEM_SEPARATOR);
 	}
 
-	public char getCharValue(String key) {
+	public char getCharValue(@NotNull String key) {
 		return getKey(key).charAt(0);
 	}
 
-	public synchronized char getCharValue(String key, char defaultValue) {
+	public synchronized char getCharValue(@NotNull String key, char defaultValue) {
 		String value = System.getProperty(key);
 		return value == null ? defaultValue : value.charAt(0);
 	}
 
-	public List<Character> getCharList(String key, String separator) {
+	public @NotNull List<@NotNull Character> getCharList(@NotNull String key, @NotNull String separator) {
 		List<Character> parts = new ArrayList<>();
 		for (String value : getKey(key).split(separator))
 			parts.add(value.trim().charAt(0));
 		return parts;
 	}
 
-	public List<Character> getCharList(String key) {
+	public @NotNull List<@NotNull Character> getCharList(@NotNull String key) {
 		return getCharList(key, ITEM_SEPARATOR);
 	}
 
-	public double getDoubleValue(String key) {
+	public double getDoubleValue(@NotNull String key) {
 		return Double.parseDouble(getKey(key));
 	}
 
-	public synchronized double getDoubleValue(String key, double defaultValue) {
+	public synchronized double getDoubleValue(@NotNull String key, double defaultValue) {
 		String value = System.getProperty(key);
 		return value == null ? defaultValue : Double.parseDouble(value);
 	}
 
-	public List<Double> getDoubleList(String key, String separator) {
+	public @NotNull List<@NotNull Double> getDoubleList(@NotNull String key, @NotNull String separator) {
 		List<Double> parts = new ArrayList<>();
 		for (String value : getKey(key).split(separator))
 			parts.add(Double.parseDouble(value.trim()));
 		return parts;
 	}
 
-	public List<Double> getDoubleList(String key) {
+	public @NotNull List<@NotNull Double> getDoubleList(@NotNull String key) {
 		return getDoubleList(key, ITEM_SEPARATOR);
 	}
 
-	public float getFloatValue(String key) {
+	public float getFloatValue(@NotNull String key) {
 		return Float.parseFloat(getKey(key));
 	}
 
-	public synchronized float getFloatValue(String key, float defaultValue) {
+	public synchronized float getFloatValue(@NotNull String key, float defaultValue) {
 		String value = System.getProperty(key);
 		return value == null ? defaultValue : Float.parseFloat(value);
 	}
 
-	public List<Float> getFloatList(String key, String separator) {
+	public @NotNull List<@NotNull Float> getFloatList(@NotNull String key, @NotNull String separator) {
 		List<Float> parts = new ArrayList<>();
 		for (String value : getKey(key).split(separator))
 			parts.add(Float.parseFloat(value.trim()));
 		return parts;
 	}
 
-	public List<Float> getFloatList(String key) {
+	public @NotNull List<@NotNull Float> getFloatList(@NotNull String key) {
 		return getFloatList(key, ITEM_SEPARATOR);
 	}
 
-	public int getIntValue(String key) {
+	public int getIntValue(@NotNull String key) {
 		return Integer.parseInt(getKey(key));
 	}
 
-	public synchronized int getIntValue(String key, int defaultValue) {
+	public synchronized int getIntValue(@NotNull String key, int defaultValue) {
 		String value = System.getProperty(key);
 		return value == null ? defaultValue : Integer.parseInt(value);
 	}
 
-	public List<Integer> getIntList(String key, String separator) {
+	public @NotNull List<@NotNull Integer> getIntList(@NotNull String key, @NotNull String separator) {
 		List<Integer> parts = new ArrayList<>();
 		for (String value : getKey(key).split(separator))
 			parts.add(Integer.parseInt(value.trim()));
 		return parts;
 	}
 
-	public List<Integer> getIntList(String key) {
+	public @NotNull List<@NotNull Integer> getIntList(@NotNull String key) {
 		return getIntList(key, ITEM_SEPARATOR);
 	}
 
-	public long getLongValue(String key) {
+	public long getLongValue(@NotNull String key) {
 		try {
 			return Long.parseLong(getKey(key));
 		} catch (NumberFormatException e) {
@@ -211,7 +215,7 @@ public abstract class AbstractConfiguration implements Configurable {
 		}
 	}
 
-	public synchronized long getLongValue(String key, long defaultValue) {
+	public synchronized long getLongValue(@NotNull String key, long defaultValue) {
 		String value = System.getProperty(key);
 		try {
 			return value == null ? defaultValue : Long.parseLong(value);
@@ -220,7 +224,7 @@ public abstract class AbstractConfiguration implements Configurable {
 		}
 	}
 
-	public List<Long> getLongList(String key, String separator) {
+	public @NotNull List<@NotNull Long> getLongList(@NotNull String key, @NotNull String separator) {
 		List<Long> parts = new ArrayList<>();
 		try {
 			for (String value : getKey(key).split(separator))
@@ -231,11 +235,11 @@ public abstract class AbstractConfiguration implements Configurable {
 		}
 	}
 
-	public List<Long> getLongList(String key) {
+	public @NotNull List<@NotNull Long> getLongList(@NotNull String key) {
 		return getLongList(key, ITEM_SEPARATOR);
 	}
 
-	public short getShortValue(String key) {
+	public short getShortValue(@NotNull String key) {
 		try {
 			return Short.parseShort(getKey(key));
 		} catch (NumberFormatException e) {
@@ -243,7 +247,7 @@ public abstract class AbstractConfiguration implements Configurable {
 		}
 	}
 
-	public synchronized short getShortValue(String key, short defaultValue) {
+	public synchronized short getShortValue(@NotNull String key, short defaultValue) {
 		String value = System.getProperty(key);
 		try {
 			return value == null ? defaultValue : Short.parseShort(value);
@@ -252,7 +256,7 @@ public abstract class AbstractConfiguration implements Configurable {
 		}
 	}
 
-	public List<Short> getShortList(String key, String separator) {
+	public @NotNull List<@NotNull Short> getShortList(@NotNull String key, @NotNull String separator) {
 		List<Short> parts = new ArrayList<>();
 		try {
 			for (String value : getKey(key).split(separator))
@@ -263,51 +267,52 @@ public abstract class AbstractConfiguration implements Configurable {
 		}
 	}
 
-	public List<Short> getShortList(String key) {
+	public @NotNull List<@NotNull Short> getShortList(@NotNull String key) {
 		return getShortList(key, ITEM_SEPARATOR);
 	}
 
-	public String getStringValue(String key) {
+	public @NotNull String getStringValue(@NotNull String key) {
 		return getKey(key);
 	}
 
-	public synchronized String getStringValue(String key, String defaultValue) {
+	@Contract("_, null -> null; _, !null -> !null")
+	public synchronized @Nullable String getStringValue(@NotNull String key, @Nullable String defaultValue) {
 		String value = System.getProperty(key);
 		return value == null ? defaultValue : value;
 	}
 
-	public List<String> getStringList(String key, String separator) {
+	public @NotNull List<@NotNull String> getStringList(@NotNull String key, @NotNull String separator) {
 		List<String> parts = new ArrayList<>();
 		for (String value : getKey(key).split(separator))
 			parts.add(value.trim());
 		return parts;
 	}
 
-	public List<String> getStringList(String key) {
+	public @NotNull List<@NotNull String> getStringList(@NotNull String key) {
 		return getStringList(key, ITEM_SEPARATOR);
 	}
 
-	public synchronized Properties getProperties() {
+	public synchronized @NotNull Properties getProperties() {
 		return System.getProperties();
 	}
 
-	public synchronized <T> void setProperty(String key, T value) {
+	public synchronized <T> void setProperty(@NotNull String key, @NotNull T value) {
 		String item = value.toString();
 		System.setProperty(key, item);
 		LOG.info("Set configuration property: [{}] => [{}]", key, item);
 	}
 
-	public synchronized <T> void setProperties(Map<String, T> properties) {
+	public synchronized <T> void setProperties(@NotNull Map<String, T> properties) {
 		for (Entry<String, T> entry : properties.entrySet())
 			setProperty(entry.getKey(), entry.getValue());
 	}
 
-	public synchronized void setProperties(Properties properties) {
+	public synchronized void setProperties(@NotNull Properties properties) {
 		for (Object e : properties.keySet())
 			setProperty((String) e, properties.getProperty((String) e));
 	}
 
-	public synchronized void clearProperty(String key) {
+	public synchronized void clearProperty(@NotNull String key) {
 		System.clearProperty(key);
 		LOG.info("Unset configuration property: [{}]", key);
 	}
@@ -328,7 +333,7 @@ public abstract class AbstractConfiguration implements Configurable {
 		LOG.info("Configuration properties have been reset");
 	}
 
-	private synchronized String getKey(String key) {
+	private synchronized @NotNull String getKey(@NotNull String key) {
 		String value = System.getProperty(key);
 		if (value == null)
 			throw new ConfigurationException(String.format("Unable to find configuration value for key [%s]", key));
