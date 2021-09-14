@@ -25,9 +25,11 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.trendafilov.confucius.core.ConfigurationException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class InjectableConfigurationTest {
 	private final static String TEST_CONTEXT = "Test2";
@@ -51,7 +53,7 @@ public class InjectableConfigurationTest {
 	}
 
 	@Test
-	public void testTwoArgsConstructorUsingInputStream() throws IOException {
+	public void testTwoArgsConstructorUsingInputStream() {
 		StringBuilder conf = new StringBuilder("[Default]");
 		conf.append("\n");
 		conf.append("key123=value123");
@@ -70,6 +72,11 @@ public class InjectableConfigurationTest {
 		assertEquals("value123", config.getStringValue("key123"));
 		assertEquals("value456", config.getStringValue("key456"));
 		temp.delete();
+	}
+
+	@Test
+	public void testTwoArgsConstructorWithoutFilepath() {
+		assertThrows(ConfigurationException.class, () -> new InjectableConfiguration((String) null, null));
 	}
 	
 	@AfterEach
