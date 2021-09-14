@@ -271,9 +271,9 @@ public abstract class AbstractConfiguration implements Configurable {
 		return getKey(key);
 	}
 
-	public synchronized String getStringValue(String key, String defautValue) {
+	public synchronized String getStringValue(String key, String defaultValue) {
 		String value = System.getProperty(key);
-		return value == null ? defautValue : value;
+		return value == null ? defaultValue : value;
 	}
 
 	public List<String> getStringList(String key, String separator) {

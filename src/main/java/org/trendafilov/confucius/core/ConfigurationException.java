@@ -16,8 +16,11 @@
 
 package org.trendafilov.confucius.core;
 
+import java.io.Serial;
+
 public class ConfigurationException extends RuntimeException {
 
+	@Serial
 	private static final long serialVersionUID = 2909522377132243053L;
 
 	public ConfigurationException() {

@@ -489,7 +489,7 @@ public interface Configurable {
 	 * @return associated value as a String, or <b>defaultValue</b> if the map
 	 *         does not contain the <b>key</b>
 	 */
-	String getStringValue(String key, String defautValue);
+	String getStringValue(String key, String defaultValue);
 
 	/**
 	 * Returns a List of values mapped to the specified key, or throws an

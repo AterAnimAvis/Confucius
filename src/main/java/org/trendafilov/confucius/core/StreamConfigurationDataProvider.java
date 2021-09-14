@@ -19,6 +19,7 @@ package org.trendafilov.confucius.core;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,11 +36,11 @@ class StreamConfigurationDataProvider implements ConfigurationDataProvider {
 		if (inputStream == null)
 			return new ArrayList<>();
 		String configurationString = Utils.streamToString(inputStream);
-		this.inputStream = new ByteArrayInputStream(configurationString.getBytes("UTF-8"));
+		this.inputStream = new ByteArrayInputStream(configurationString.getBytes(StandardCharsets.UTF_8));
 		return new ArrayList<>(Arrays.asList(configurationString.split("\\r?\\n")));
 	}
 
-	public InputStream getInputStream() throws IOException {
+	public InputStream getInputStream() {
 		return inputStream;
 	}
 }

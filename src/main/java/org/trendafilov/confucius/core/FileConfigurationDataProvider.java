@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ class FileConfigurationDataProvider implements ConfigurationDataProvider {
 	}
 
 	public List<String> getAllLines() throws IOException {
-		return filename == null ? new ArrayList<String>() : Files.readAllLines(new File(filename).toPath(), Charset.forName("UTF-8"));
+		return filename == null ? new ArrayList<>() : Files.readAllLines(new File(filename).toPath(), StandardCharsets.UTF_8);
 	}
 
 	public InputStream getInputStream() throws IOException {

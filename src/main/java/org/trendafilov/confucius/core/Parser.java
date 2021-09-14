@@ -59,7 +59,7 @@ class Parser {
 			return pair;
 		if (newLine.contains(IDENTITY)) {
 			String key = newLine.substring(0, newLine.indexOf(IDENTITY)).trim();
-			String value = newLine.substring(newLine.indexOf(IDENTITY) + 1, newLine.length()).trim();
+			String value = newLine.substring(newLine.indexOf(IDENTITY) + 1).trim();
 			pair.put(key, value);
 			return pair;
 		} else {
